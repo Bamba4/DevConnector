@@ -1,11 +1,12 @@
 import express = require("express");
-import {Request, Response} from "express";
 import auth from "../../middleware/auth";
 import Profile from "../../models/Profile.model";
 import {check, validationResult} from "express-validator";
 
 const profileRouter = express.Router();
-
+//@route GET api/profile/me
+//@desc  GET profile by user
+//@access Private
 profileRouter.get('/me', auth,
     async (req: any, resp: any) => {
     try {
@@ -67,6 +68,35 @@ profileRouter.post('/', [auth, [
             console.error(e.message);
             resp.status(500).send('Server Error');
         }
+});
+//@route GET api/profile/
+//@desc  GET All Profile
+//@access Public
+profileRouter.get('/', async  (req: any,resp: any) => {
+    try {
+        const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+        resp.json(profiles);
+    }catch (e) {
+        console.log(e.message);
+        resp.status(500).send('Server Error');
+    }
+});
+
+//@route GET api/profile/user/:user_id
+//@desc  GET  Profile by user_id
+//@access Public
+profileRouter.get('/user/:user_id', async  (req: any,resp: any) => {
+    try {
+        const profile = await Profile.findOne({user: req.params.user_id}).populate('user', ['name', 'avatar']);
+        if (!profile) return resp.status(400).json({ msg: 'There is no profile for this user' });
+        resp.json(profile);
+    }catch (e) {
+        console.log(e.message);
+        if (e.kind == 'ObjectId') {
+            resp.status(400).json({msg: 'Profile not found'});
+        }
+        resp.status(500).send('Server Error');
+    }
 });
 
 export default profileRouter;
