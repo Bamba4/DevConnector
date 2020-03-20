@@ -5,10 +5,9 @@ import User from "../../models/User.model";
 import gravatar from 'gravatar';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import config from 'config';
 const UserRouter = express.Router();
 
-UserRouter.post('/api/users', [
+UserRouter.post('/', [
     check('name', 'Name est obligatoire').not().isEmpty(),
     check('email', 'Email n\'est pas valide').isEmail(),
     check('password', 'Password doit contenir au moins 6 caractéres').isLength({min: 6})

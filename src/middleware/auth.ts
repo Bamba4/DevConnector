@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const middleware = (req:any, resp: any, next: any) => {
+const auth = (req:any, resp: any, next: any) => {
         const token = req.header('x-auth-token');
         if (!token) {
             return resp.status(401).json({msg: 'Pas de token, vous n\'etes pas authoriser'});
@@ -14,4 +14,4 @@ const middleware = (req:any, resp: any, next: any) => {
         }
 };
 
-export default middleware;
+export default auth;
