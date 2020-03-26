@@ -2,7 +2,7 @@ import express = require("express");
 import {Request, Response} from "express";
 import auth from '../../middleware/auth'
 import User from "../../models/User.model";
-import {check, validationResult} from "express-validator";
+import {check, validationResult} from "express-validator/check";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const authRouter = express.Router();

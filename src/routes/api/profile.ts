@@ -3,6 +3,7 @@ import auth from "../../middleware/auth";
 import Profile from "../../models/Profile.model";
 import {check, validationResult} from "express-validator";
 import User from "../../models/User.model";
+import Post from "../../models/Post.model";
 
 const profileRouter = express.Router();
 //@route GET api/profile/me
@@ -92,10 +93,10 @@ profileRouter.get('/user/:user_id', async  (req: any,resp: any) => {
         if (!profile) return resp.status(400).json({ msg: 'There is no profile for this user' });
         resp.json(profile);
     }catch (e) {
-        console.log(e.message);
         if (e.kind == 'ObjectId') {
             resp.status(400).json({msg: 'Profile not found'});
         }
+        console.log(e.message);
         resp.status(500).send('Server Error');
     }
 });
@@ -104,7 +105,8 @@ profileRouter.get('/user/:user_id', async  (req: any,resp: any) => {
 //@access Private
 profileRouter.delete('/', auth, async  (req: any,resp: any) => {
     try {
-        //@todo - remove users posts
+        //Remove post
+        await Post.findOneAndRemove({user: req.user.id});
         //Remove profile
         await Profile.findOneAndRemove({ user: req.user.id });
         //remove user
@@ -159,7 +161,7 @@ profileRouter.delete('/experience/:exp_id', auth,
             //Get remove index
             if (!profile) return resp.status(401).json({msg: 'Profile not Found'});
            let removeIndex = await profile.experience.map((item:any) => item.id).indexOf(req.params.exp_id);
-           profile.experience.split(removeIndex, 1);
+           profile.experience.splice(removeIndex, 1);
            console.log(typeof profile.experience);
            await profile.save();
            return resp.json(profile);
@@ -202,14 +204,17 @@ profileRouter.put('/education', [auth, [
 // @ts-ignore
 profileRouter.delete('/education/:educt_id', auth, async (req: any, resp: any) => {
     try{
-        const profile: any = Profile.findOne({ user: req.user.id });
-        const romoveIndex = profile.education.map((item:any) => item.id).indexOf(req.params.educt_id);
-        profile.education.split(romoveIndex, 1);
+        // @ts-ignore
+        let profile: Profile  = await Profile.findOne({ user: req.user.id });
+        //Get remove index
+        if (!profile) return resp.status(401).json({msg: 'Profile not Found'});
+        let removeIndex = await profile.experience.map((item:any) => item.id).indexOf(req.params.educt_id);
+        profile.education.splice(removeIndex, 1);
         await profile.save();
         return resp.json(profile);
     }catch (e) {
         console.error(e.message);
-        return resp.status(500).json({msg: 'Server Error'});
+        resp.status(500).json({ msg: 'Server Error' });
     }
 });
 export default profileRouter;

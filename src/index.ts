@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import db from "./config/db";
 import profileRouter from "./routes/api/profile";
 import authRouter from "./routes/api/auth";
+import postRouter from "./routes/api/post";
 db;
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 app.use('/api/users', UserRouter);
 app.use('/api/profile/', profileRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
 app.listen(PORT , () => {
    console.log(`Server started on port: ${PORT}`)
 });

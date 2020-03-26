@@ -31,6 +31,7 @@ UserRouter.post('/', [
                    name, email,password, avatar
                 });
                 const salt = await bcrypt.genSalt(10);
+                // @ts-ignore
                 user.password = await bcrypt.hash(password, salt);
                 await user.save();
                 const payload = {
