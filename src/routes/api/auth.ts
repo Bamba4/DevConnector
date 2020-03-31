@@ -10,8 +10,7 @@ const authRouter = express.Router();
 authRouter.get('/me', auth , async (req: any, resp: any) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
-        console.log(req.user.id);
-        resp.json(user);
+        console.log(req.user.id);resp.json(user);
     }catch (e) {
         console.error(e.message);
         resp.status(500).send('Server Error');
@@ -32,11 +31,9 @@ authRouter.post('/', [
             if (!user) {
                 resp.status(400).json({errors: [{msg: 'Invalid credentials'}]})
             }
-
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 resp.status(400).json({errors: [{msg: 'User or password invalid'}]})
-
             }
             const payload = {
                 user: {

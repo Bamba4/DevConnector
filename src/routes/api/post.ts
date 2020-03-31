@@ -3,7 +3,6 @@ import auth from "../../middleware/auth";
 import {check, validationResult} from "express-validator";
 import User from "../../models/User.model";
 import Post from "../../models/Post.model";
-import * as mongoose from "mongoose";
 
 const postRouter = express.Router();
 //@route POST api/posts

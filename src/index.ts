@@ -6,10 +6,12 @@ import db from "./config/db";
 import profileRouter from "./routes/api/profile";
 import authRouter from "./routes/api/auth";
 import postRouter from "./routes/api/post";
+import cors from 'cors';
 db;
 const app = express();
 
 const  PORT = process.env.PORT || 5000;
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use('/api/users', UserRouter);
